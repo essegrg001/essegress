@@ -4,14 +4,6 @@ import pandas as pd
 from datetime import datetime
 import calendar
 from io import BytesIO
-import os
-
-def get_token():
-    try:
-        return st.secrets['GITHUB_TOKEN']
-    except Exception:
-        return os.environ.get('GITHUB_TOKEN', '')
-
 st.set_page_config(page_title='GitHub Billing Portal', layout='wide')
 
 def safe_format_date(date_val):
@@ -137,9 +129,7 @@ st.markdown('엔터프라이즈 라이선스 사용 현황을 실시간으로 �
 
 with st.sidebar:
     st.header('설정')
-    token = get_token()
-    if not token:
-        token = st.text_input('GitHub Token', type='password', help='ghp_... 형식의 PAT 입력')
+    token = st.text_input('GitHub Token', type='password', help='ghp_... 형식의 PAT 입력')
     ent_name = st.text_input('Enterprise Name', value='esse-git')
     org_name = st.text_input('Organization Name', value='essegrg001')
     st.header('조회 설정')
@@ -149,7 +139,7 @@ with st.sidebar:
 
 if btn_run:
     if not token:
-        st.error('GitHub Token을 입력하거나 환경변수 GITHUB_TOKEN을 설정해주세요.')
+        st.error('사이드바에서 GitHub Token을 입력해주세요.')
     else:
         hdrs = {'Authorization': f'Bearer {token}', 'Accept': 'application/vnd.github+json'}
         with st.spinner('GitHub API에서 데이터를 불러오는 중...'):
@@ -176,5 +166,8 @@ if btn_run:
             file_name=f'GitHub_Report_{target_year}_{month_range[0]:02d}_{month_range[1]:02d}.xlsx',
             mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         )
+
+
+
 
 
